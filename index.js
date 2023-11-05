@@ -53,6 +53,7 @@ async function getExtraID() {
 
 async function updateGist() {
     const extraID = await getExtraID();
+    console.log(extraID)
     const newGist = {
         files: {
             'gistfile1.txt': {
