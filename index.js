@@ -53,7 +53,6 @@ async function getExtraID() {
 
 async function updateGist() {
     const extraID = await getExtraID();
-    console.log(extraID)
     const newGist = {
         files: {
             'gistfile1.txt': {
@@ -70,7 +69,7 @@ async function updateGist() {
             "X-GitHub-Api-Version": "2022-11-28"
         }
     });
-    console.log(response.status === 200 ? 'Gist updated' : 'Gist update failed')
+    console.log(response.status === 200 ? 'Gist updated with value: ' + extraID : 'Gist update failed')
 }
 
 updateGist();
