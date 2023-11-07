@@ -43,33 +43,45 @@ function extractExtraID(deobfuscatedCode) {
 	return extraID;
 }
 
-async function getExtraID() {
+function extractHeader(deobfuscatedCode) {
+    const splitted = deobfuscatedCode.split(".headers =");
+    const header = splitted[0].split("'").reverse()[1];
+    return header;
+}
+
+async function getExtraIDAndHeader() {
     const body = await getBodyScript();
     const obfuscatedCode = extractObfuscatedCode(body);
     const deobfuscatedCode = await deobfuscate(obfuscatedCode);
     const extraID = extractExtraID(deobfuscatedCode);
-    return extraID;
+    const header = extractHeader(deobfuscatedCode);
+    return JSON.stringify({[header]: extraID});
 }
 
 async function updateGist() {
-    const extraID = await getExtraID();
+    const extraIDObject = await getExtraIDAndHeader();
     const newGist = {
         files: {
             'gistfile1.txt': {
-                content: extraID
+                content: extraIDObject
             }
         }
     }
-    const response = await fetch('https://api.github.com/gists/e4a16c42e584dc87b362698324eb80ec', {
-        method: 'PATCH',
-        body: JSON.stringify(newGist),
-        headers: {
-            "Accept": "application/vnd.github+json",
-            "Authorization": "Bearer " + process.env.GITHUB_TOKEN,
-            "X-GitHub-Api-Version": "2022-11-28"
-        }
-    });
-    console.log(response.status === 200 ? 'Gist updated with value: ' + extraID : 'Gist update failed')
+    if(process.env.CI) {
+        const response = await fetch('https://api.github.com/gists/e4a16c42e584dc87b362698324eb80ec', {
+            method: 'PATCH',
+            body: JSON.stringify(newGist),
+            headers: {
+                "Accept": "application/vnd.github+json",
+                "Authorization": "Bearer " + process.env.GITHUB_TOKEN,
+                "X-GitHub-Api-Version": "2022-11-28"
+            }
+        });
+        console.log(response.status === 200 ? 'Gist updated with value: ' + extraIDObject : 'Gist update failed')
+    }
+    else {
+        console.log(extraIDObject)
+    }
 }
 
 updateGist();
