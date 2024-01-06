@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/ApsiV11/SecretHashRefresher#readme",
   "dependencies": {
-    "deobfuscator": "^2.4.4",
+    "deobfuscator": "^2.4.5",
     "dotenv": "^16.3.1"
   }
 }

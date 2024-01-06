@@ -19,7 +19,7 @@ async function getBodyScript() {
 
 function extractObfuscatedCode(code) {
 	const splitted = code.split(';');
-	const start = splitted.findIndex(line => containsHexCode(line) && line.startsWith('function'));
+	const start = splitted.findIndex(line => containsHexCode(line) && line.includes('function'));
 
 	const end = splitted.findIndex(
 		line => containsHexCode(line) && /\(.*window\[.*'in'\]=window\[.*'in'\]/.test(line)
