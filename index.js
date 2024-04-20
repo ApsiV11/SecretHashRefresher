@@ -38,14 +38,15 @@ async function deobfuscate(code) {
 }
 
 function extractExtraID(deobfuscatedCode) {
-	const splitted = deobfuscatedCode.split(".replace(/-/g, '')).concat(_.isBoolean(");
-	const extraID = splitted[1].split("'")[3].replaceAll('-', '');
+	const splitted = deobfuscatedCode.split("inventoryId.replace(/-/g, '')).concat(_.isBoolean(");
+	const extraID = splitted[1].match(/[0-9a-f]{32}/g)[1];
 	return extraID;
 }
 
 function extractHeader(deobfuscatedCode) {
     const splitted = deobfuscatedCode.split(".headers =");
-    const header = splitted[0].split("'").reverse()[1];
+    const headerObject = splitted[1].split('_')[1].split(';')[0];
+    const header = splitted[0].split(headerObject).reverse()[0].split("'")[1];
     return header;
 }
 
