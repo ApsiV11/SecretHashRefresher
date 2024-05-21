@@ -18,7 +18,7 @@ async function getBodyScript() {
 }
 
 function extractObfuscatedCode(code) {
-	const splitted = code.split(';');
+	/**const splitted = code.split(';');
 	const start = splitted.findIndex(line => containsHexCode(line) && line.includes('function'));
 
 	const end = splitted.findIndex(
@@ -29,7 +29,8 @@ function extractObfuscatedCode(code) {
 	const lines = splitted.slice(start, end + 1);
 	const combined = lines.join(';');
 
-	return combined;
+	return combined;**/
+    return code
 }
 
 async function deobfuscate(code) {
@@ -43,11 +44,10 @@ function extractExtraID(deobfuscatedCode) {
 	return extraID;
 }
 
-function extractHeader(deobfuscatedCode) {
-    const splitted = deobfuscatedCode.split(".headers =");
-    const headerObject = splitted[1].split('_')[1].split(';')[0];
-    const header = splitted[0].split(headerObject).reverse()[0].split("'")[1];
-    return header;
+function extractHeader(deobfuscatedCode, extraID) {
+    const splitted = deobfuscatedCode.split(extraID)[1].split('.headers')[0];
+    const header = splitted.split('').reverse().join('').match(/(?<=')[^'\r\n]*(?=')/)[0];
+    return header.split('').reverse().join('');
 }
 
 async function getExtraIDAndHeader() {
@@ -55,7 +55,7 @@ async function getExtraIDAndHeader() {
     const obfuscatedCode = extractObfuscatedCode(body);
     const deobfuscatedCode = await deobfuscate(obfuscatedCode);
     const extraID = extractExtraID(deobfuscatedCode);
-    const header = extractHeader(deobfuscatedCode);
+    const header = extractHeader(deobfuscatedCode, extraID);
     return JSON.stringify({[header]: extraID});
 }
 
