@@ -45,7 +45,7 @@ function extractExtraID(deobfuscatedCode) {
 }
 
 function extractHeader(deobfuscatedCode, extraID) {
-    const splitted = deobfuscatedCode.split(extraID)[1].split('.headers')[0];
+    const splitted = deobfuscatedCode.split(extraID)[1].split('headers')[0];
     const header = splitted.split('').reverse().join('').match(/(?<=')[^'\r\n]*(?=')/)[0];
     return header.split('').reverse().join('');
 }
